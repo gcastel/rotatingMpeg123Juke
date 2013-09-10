@@ -33,7 +33,7 @@ func readLines(path string) ([]string, error) {
   return lines, scanner.Err()
 }
 
-// écrit la ligne dans le fichier spécifié 
+// Ecrit la ligne dans le fichier spécifié 
 func writeLine(line string, path string) error {
   file, err := os.Create(path)
   if err != nil {
@@ -61,6 +61,13 @@ func launchMP3(mp3File string) {
     print(string(out))
 }
 
+func updateNextTrack(nextTrack string) {
+      errw := writeLine(nextTrack, "nexttrack.txt")
+      if errw != nil {
+        log.Fatalf("writeLine: %s", errw)
+      }
+}
+
 func main() {
     // Recherche du playlist.txt
     playList, err := readLines("playlist.txt")
@@ -75,10 +82,7 @@ func main() {
       // On essaye de créer le fichier s'il n'existe pas
       nextTracks = make([]string,1,1)
       nextTracks[0] = playList[0]
-      errw := writeLine(nextTracks[0], "nexttrack.txt")
-      if errw != nil {
-        log.Fatalf("writeLine: %s", errw)
-      }
+      updateNextTrack(nextTracks[0])
     }
     nextTrack := nextTracks[0]
     nbLines := len(playList)
@@ -98,10 +102,7 @@ func main() {
       // On repart à 0
       nextTrack = playList[0]
       nextTracks[0] = nextTrack
-      errw := writeLine(nextTrack, "nexttrack.txt")
-      if errw != nil {
-        log.Fatalf("writeLine: %s", errw)
-      }
+      updateNextTrack(nextTrack)
       startPos = 0
     }
 
@@ -116,11 +117,7 @@ func main() {
       }
       nextTrack = playList[startPos]
       nextTracks[0] = nextTrack
-
-      errw := writeLine(nextTrack, "nexttrack.txt")
-      if errw != nil {
-        log.Fatalf("writeLine: %s", errw)
-      }
+      updateNextTrack(nextTrack)
 
       // Lancement du mp3 qui va bien
       fmt.Printf("Lancement de %s\n", nextMP3)
